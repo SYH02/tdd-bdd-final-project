@@ -50,3 +50,26 @@ def step_impl(context):
         #
         # ADD YOUR CODE HERE TO CREATE PRODUCTS VIA THE REST API
         #
+
+from behave import when
+from service.models import Product
+
+@when("I create a product with the following data:")
+def step_create_product(context):
+    """Creates products in the service based on data in the BDD scenario context.
+
+    Iterates through each row in the context.table and creates a corresponding Product object.
+    The product is then saved to the database.
+    """
+    
+    for row in context.table:
+        product_data = {
+            "name": row["name"],
+            "description": row["description"],
+            "price": row["price"],
+            "available": row["available"].lower() in ("true", "yes", "1"),
+            "category": row["category"],
+        }
+        
+        product = Product(**product_data)  # Unpack data into object constructor
+        product.save()

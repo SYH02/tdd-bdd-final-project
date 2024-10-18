@@ -38,3 +38,108 @@ Scenario: Create a Product
     And I should see "True" in the "Available" dropdown
     And I should see "Tools" in the "Category" dropdown
     And I should see "34.95" in the "Price" field
+
+Scenario: User reads a product successfully
+
+    Given I am on the home page
+    When I enter "Hat" in the name field
+    And I click the "Search" button
+    Then I should see a success message
+    When I copy the ID of the first product
+    And I clear the name field
+    And I paste the copied ID into the name field
+    And I click the "Retrieve" button
+    Then I should see a success message
+    And the product name should be "Hat"
+    And the product description should be "A red fedora"
+    And the product availability should be "True"
+    And the product category should be "Clothes"
+    And the product price should be "59.95"
+
+Scenario: User successfully updates a product
+    Given I am on the home page
+    When I enter "Hat" in the name field
+    And I click the "Search" button
+    Then I should see a success message
+    And I should see a product with the name "Hat"
+
+    When I click the "Edit" button for the first product
+    And I change the name to "Fedora"
+    And I click the "Save" button
+    Then I should see a success message
+
+    When I clear the search field
+    And I enter "Fedora" in the name field
+    And I click the "Search" button
+    Then I should see a success message
+    And I should see "Fedora" in the search results
+    And I should not see "Hat" in the search results
+
+Scenario: User successfully deletes a product
+
+    Given I am on the home page
+    When I enter "Hat" in the name field
+    And I click the "Search" button
+    Then I should see a success message
+    And I should see a product with the name "Hat"
+
+    When I click the "Delete" button for the first product
+    Then I should see a message indicating successful deletion
+
+    When I clear the search field
+    And I enter "Hat" in the name field
+    And I click the "Search" button
+    Then I should see a success message
+    And I should not see any products in the search results
+
+
+Scenario: User lists all products successfully
+
+    Given I am on the home page
+    When I clear the search field
+    And I click the "Search" button
+    Then I should see a success message
+    And I should see "Hat" in the search results
+    And I should see "Shoes" in the search results
+    And I should see "Big Mac" in the search results
+    And I should see "Sheets" in the search results
+
+
+
+Scenario: User successfully filters products by category
+
+    Given I am on the home page
+    When I clear the search field
+    And I select "Food" in the category dropdown
+    And I click the "Search" button
+    Then I should see a success message
+    And I should see "Big Mac" in the search results
+    And I should not see "Hat" in the search results
+    And I should not see "Shoes" in the search results
+    And I should not see "Sheets" in the search results
+
+
+
+Scenario: User successfully filters products by availability
+
+    Given I am on the home page
+    When I clear the search field
+    And I select "Available" in the availability dropdown
+    And I click the "Search" button
+    Then I should see a success message
+    And I should see "Hat" in the search results
+    And I should see "Big Mac" in the search results
+    And I should see "Sheets" in the search results
+    And I should not see "Shoes" in the search results
+
+
+Scenario: User successfully searches for a product by name
+
+    Given I am on the home page
+    When I enter "Hat" in the name field
+    And I click the "Search" button
+    Then I should see a success message
+    And I should see "Hat" in the results
+    And I should see "A red fedora" in the description field
+
+

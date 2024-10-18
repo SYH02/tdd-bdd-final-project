@@ -178,3 +178,50 @@ class TestProductRoutes(TestCase):
         data = response.get_json()
         # logging.debug("data = %s", data)
         return len(data)
+
+
+    def test_get_product(self):
+        """It should Get a single Product"""
+
+        # Create a product
+        product = ProductFactory.create()
+
+        # Make a GET request to the API endpoint
+        response = self.client.get(f"{BASE_URL}/{product.id}")
+
+        # Assert the response status code
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Get the JSON data from the response
+        data = response.get_json()
+
+        # Assert the returned data matches the created product
+        self.assertEqual(data["name"], product.name)
+
+
+    def get_product(product_id):
+        """
+        Retrieves a single Product
+
+        This endpoint will return a Product based on it's id
+        """
+
+        app.logger.info("Request to Retrieve a product with id [%s]", product_id)
+
+        product = Product.find(product_id)
+        if not product:
+            abort(status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found.")
+
+        app.logger.info("Returning product: %s", product.name)
+        return product.serialize(), status.HTTP_200_OK
+
+
+    def test_product_not_found(self):
+        """Tests that a non-existent product returns a 404"""
+
+        response = self.client.get(f"{BASE_URL}/0")
+        self.assert404(response)
+
+        data = response.get_json()
+        self.assertIn("was not found", data["message"])
+

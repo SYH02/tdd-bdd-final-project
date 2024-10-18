@@ -132,3 +132,57 @@ def step_impl(context, element_name, text_string):
     )
     element.clear()
     element.send_keys(text_string)
+
+
+@when("I click the '{button}' button")
+def click_button(context, button):
+    """Clicks the specified button on the current page.
+
+    Args:
+        context: The behave context object.
+        button: The name of the button to click.
+    """
+
+    button_id = button.lower() + "-btn"
+    context.driver.find_element_by_id(button_id).click()
+
+
+@then("I should see '{text}' in the results")
+def verify_text_in_results(context, text):
+  """Verifies if the specified text is present in the search results element.
+
+  Args:
+    context: The behave context object.
+    text: The text to search for.
+  """
+
+  wait = WebDriverWait(context.driver, context.wait_seconds)
+  search_results = wait.until(EC.presence_of_element_located((By.ID, "search_results")))
+  assert text in search_results.text
+
+
+@then("I should not see '{text}' in the results")
+def verify_text_not_in_results(context, text):
+  """Verifies if the specified text is not present in the search results element.
+
+  Args:
+    context: The behave context object.
+    text: The text to check for absence.
+  """
+
+  search_results = context.driver.find_element_by_id("search_results")
+  assert text not in search_results.text
+
+
+@then("I should see the message '{message}'")
+def verify_message_present(context, message):
+  """Verifies if the specified message is displayed in the flash message element.
+
+  Args:
+    context: The behave context object.
+    message: The expected message text.
+  """
+
+  wait = WebDriverWait(context.driver, context.wait_seconds)
+  flash_message = wait.until(EC.presence_of_element_located((By.ID, "flash_message")))
+  assert message == flash_message.text
